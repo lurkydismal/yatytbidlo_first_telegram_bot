@@ -11,8 +11,7 @@ int main( int _argumentCount, char* _argumentVector[] ) {
         if ( _argumentCount != 2 ) {
             fmt::print( stderr, "Usage: {} <port>\n", _argumentVector[ 0 ] );
 
-            l_exitCode.assign( ENOTSUP,
-                               std::generic_category() );
+            l_exitCode.assign( ENOTSUP, std::generic_category() );
 
             throw( std::runtime_error( l_exitCode.message() ) );
         }
