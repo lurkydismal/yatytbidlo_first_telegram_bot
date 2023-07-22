@@ -13,19 +13,14 @@
 #include <fstream>
 
 /* When JS_ReportError creates a new Error object, it sets the fileName and
- * lineNumber properties to the line of JavaScript code currently at the top
- of
- * the stack. This is usually the line of code that called your native
- function,
- * so it's usually what you want. JSAPI code can override this by creating
- the
+ * lineNumber properties to the line of JavaScript code currently at the top of
+ * the stack. This is usually the line of code that called your native function,
+ * so it's usually what you want. JSAPI code can override this by creating the
  * Error object directly and passing additional arguments to the constructor:
  *
- * // JavaScript
  * throw new Error(_message, _fileName, _lineNumber);
  *
- * An example use would be to pass the filename and line number in the C++
- code
+ * An example use would be to pass the filename and line number in the C++ code
  * instead:
  *
  * return throwError(_context, _global, _message, __FILE__, __LINE__);
