@@ -1,3 +1,4 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/e6f7b6d900fe4bf48939bb9782b2beb1)](https://app.codacy.com/gh/lurkydismal/yatytbidlo_first_telegram_bot?utm_source=github.com&utm_medium=referral&utm_content=lurkydismal/yatytbidlo_first_telegram_bot&utm_campaign=Badge_Grade)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/lurkydismal/yatytbidlo_first_telegram_bot/badge)](https://securityscorecards.dev/viewer/?uri=github.com/lurkydismal/yatytbidlo_first_telegram_bot)
 
 # first_telegramBot
