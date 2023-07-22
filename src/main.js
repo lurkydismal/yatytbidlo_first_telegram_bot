@@ -3,7 +3,7 @@ function sendGETRequest( _callback ) {
 
     l_xmlHttp.onreadystatechange = function() {
         if ( ( l_xmlHttp.readyState == XMLHttpRequest.DONE ) &&
-             ( l_xmlHttp.status == 200 ) ) {
+             ( l_xmlHttp.status === 200 ) ) {
             _callback( l_xmlHttp.responseText );
         }
     };
@@ -12,6 +12,4 @@ function sendGETRequest( _callback ) {
     l_xmlHttp.send( null );
 }
 
-function receiveRoutine( _responce ) {
-    print( _responce );
-}
+function receiveRoutine( _responce ) { print( _responce ); }
