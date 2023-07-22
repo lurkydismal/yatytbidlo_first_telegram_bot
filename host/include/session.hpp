@@ -7,7 +7,7 @@ using asio::ip::tcp;
 
 class session : public std::enable_shared_from_this< session > {
 public:
-    session( tcp::socket _socket );
+    explicit session( tcp::socket _socket );
 
     void start( void );
 
