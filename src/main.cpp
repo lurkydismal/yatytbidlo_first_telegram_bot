@@ -5,11 +5,16 @@
 #include <cerrno>
 
 int main( int _argumentCount, char* _argumentVector[] ) {
+    std::error_code l_exitCode;
+
     try {
         if ( _argumentCount != 2 ) {
             fmt::print( stderr, "Usage: {} <port>\n", _argumentVector[ 0 ] );
 
-            return ( EOPNOTSUPP );
+            l_exitCode.assign( ENOTSUP,
+                               std::generic_category() );
+
+            throw( std::runtime_error( l_exitCode.message() ) );
         }
 
         asio::io_context l_ioContext;
@@ -22,5 +27,5 @@ int main( int _argumentCount, char* _argumentVector[] ) {
         fmt::print( stderr, "Exception: {}\n ", _exception.what() );
     }
 
-    return ( 0 );
+    return ( l_exitCode.value() );
 }
