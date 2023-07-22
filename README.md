@@ -1,4 +1,4 @@
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/{owner}/{repo}/badge)](https://securityscorecards.dev/viewer/?uri=github.com/{owner}/{repo})
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/lurkydismal/yatytbidlo_first_telegram_bot/badge)](https://securityscorecards.dev/viewer/?uri=github.com/lurkydismal/yatytbidlo_first_telegram_bot)
 
 # first_telegramBot
 > Outline a brief description of your project.
