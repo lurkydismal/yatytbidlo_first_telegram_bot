@@ -12,7 +12,7 @@ using asio::ip::tcp;
 
 static bool onReceiveRoutine( JSContext* _context,
                               std::string _fileName,
-                              const std::string _response ) {
+                              const std::string& _response ) {
     JS::RootedObject l_global( _context,
                                JavaScriptIC::createGlobal( _context ) );
 
