@@ -8,7 +8,7 @@ int main( int _argumentCount, char* _argumentVector[] ) {
     std::error_code l_exitCode;
 
     try {
-        if ( ( _argumentCount != 2 ) || ( std::atoi( _argumentVector[ 1 ] ) > 65535 ) ) {
+        if ( ( _argumentCount != 2 ) || ( std::atoi( _argumentVector[ 1 ] ) < 0 ) || ( std::atoi( _argumentVector[ 1 ] ) > 65535 ) ) {
             fmt::print( stderr, "Usage: {} <port>\n", _argumentVector[ 0 ] );
 
             l_exitCode.assign( ENOTSUP, std::generic_category() );
