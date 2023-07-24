@@ -1,4 +1,4 @@
-function sendGETRequest( _callback ) {
+function sendGETRequest( _path, _callback ) {
     let l_xmlHttp = new XMLHttpRequest();
 
     l_xmlHttp.onreadystatechange = function() {
