@@ -6,8 +6,6 @@
 
 int main( int _argumentCount, char* _argumentVector[] ) {
     std::error_code l_exitCode;
-    asio::io_context l_ioContext;
-    uint32_t l_portNumber;
 
     try {
         if ( _argumentCount != 2 ) {
@@ -18,7 +16,8 @@ int main( int _argumentCount, char* _argumentVector[] ) {
             throw( std::runtime_error( l_exitCode.message() ) );
         }
 
-        l_portNumber = std::atoi( _argumentVector[ 1 ] );
+        uint32_t l_portNumber = std::atoi( _argumentVector[ 1 ] );
+        asio::io_context l_ioContext;
 
         host l_host( l_ioContext, l_portNumber );
 
