@@ -17,6 +17,15 @@ int main( int _argumentCount, char* _argumentVector[] ) {
         }
 
         uint32_t l_portNumber = std::atoi( _argumentVector[ 1 ] );
+
+        if ( ( l_portNumber <= 0 ) || ( l_portNumber > 65535 ) ) {
+            fmt::print( stderr, "Usage: {} <port>\n", _argumentVector[ 0 ] );
+
+            l_exitCode.assign( ENOTSUP, std::generic_category() );
+
+            throw( std::runtime_error( l_exitCode.message() ) );
+        }
+
         asio::io_context l_ioContext;
 
         host l_host( l_ioContext, l_portNumber );
