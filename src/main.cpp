@@ -10,7 +10,8 @@ int main( int _argumentCount, char* _argumentVector[] ) {
     try {
         uint16_t l_portNumber = std::atoi( _argumentVector[ 1 ] );
 
-        if ( ( _argumentCount != 2 ) || ( l_portNumber < 65534 ) ) {
+        if ( ( _argumentCount != 2 ) ||
+             ( l_portNumber != std::atoi( _argumentVector[ 1 ] ) ) ) {
             fmt::print( stderr, "Usage: {} <port>\n", _argumentVector[ 0 ] );
 
             l_exitCode.assign( ENOTSUP, std::generic_category() );
@@ -20,7 +21,7 @@ int main( int _argumentCount, char* _argumentVector[] ) {
 
         asio::io_context l_ioContext;
 
-        host l_host( l_ioContext, std::atoi( _argumentVector[ 1 ] ) );
+        host l_host( l_ioContext, l_portNumber );
 
         l_ioContext.run();
 
