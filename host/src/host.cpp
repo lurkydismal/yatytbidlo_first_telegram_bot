@@ -5,7 +5,7 @@
 using asio::ip::tcp;
 
 host::host( asio::io_context& _ioContext, short _port )
-    : acceptor_( _ioContext, tcp::endpoint( tcp::v4(), _port ) ) {
+    : acceptor_( _ioContext, tcp::endpoint( ip::address_v6::any(), _port ) ) {
     doAccept();
 }
 
