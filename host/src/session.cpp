@@ -79,7 +79,7 @@ void session::doRead( void ) {
         asio::buffer( data_, MAX_LENGTH ),
         [ this, self ]( std::error_code _errorCode, std::size_t _length ) {
             if ( _errorCode ) {
-                errorCode_ = errorCode_;
+                errorCode_ = _errorCode;
             } else {
                 fmt::print( fmt::emphasis::bold | fg( fmt::color::green ),
                             "{}\n", data_ );
