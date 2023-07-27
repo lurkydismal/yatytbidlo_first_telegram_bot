@@ -16,6 +16,7 @@ private:
     void doWrite( std::size_t _length );
 
 private:
+    std::error_code errorCode_;
     tcp::socket socket_;
     const std::string fileName_ = "main.js";
     enum { MAX_LENGTH = 1024 };

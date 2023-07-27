@@ -3,21 +3,36 @@
 #include <host.hpp>
 
 #include <cerrno>
+#include <random>
 
 int main( int _argumentCount, char* _argumentVector[] ) {
     std::error_code l_exitCode;
 
     try {
-        uint16_t l_portNumber = std::atoi( _argumentVector[ 1 ] );
+        uint16_t l_portNumber =
+            ( _argumentCount == 2 ) ? std::atoi( _argumentVector[ 1 ] ) : 0;
 
         if ( ( _argumentCount != 2 ) ||
              ( l_portNumber != std::atoi( _argumentVector[ 1 ] ) ) ) {
-            fmt::print( stderr, "Usage: {} <port>\n", _argumentVector[ 0 ] );
+            fmt::print( stderr, "Usage: {} <port> or 0\n",
+                        _argumentVector[ 0 ] );
 
-            l_exitCode.assign( ENOTSUP, std::generic_category() );
+            l_exitCode.assign( EINVAL, std::generic_category() );
 
-            throw( std::runtime_error( l_exitCode.message() ) );
+            throw( std::invalid_argument( l_exitCode.message() ) );
         }
+
+        if ( l_portNumber == 0 ) {
+            std::default_random_engine l_generator(
+                std::chrono::system_clock::now().time_since_epoch().count() );
+
+            std::uniform_int_distribution< uint16_t > l_distribution( 1000,
+                                                                      65535 );
+
+            l_portNumber = l_distribution( l_generator );
+        }
+
+        fmt::print( "Launch using port {}\n ", l_portNumber );
 
         asio::io_context l_ioContext;
 
@@ -25,7 +40,7 @@ int main( int _argumentCount, char* _argumentVector[] ) {
 
         l_ioContext.run();
 
-    } catch ( std::exception& _exception ) {
+    } catch ( std::invalid_argument const& _exception ) {
         fmt::print( stderr, "Exception: {}\n ", _exception.what() );
     }
 

@@ -42,10 +42,18 @@ endif
 minimal_program = cxx.run(
     '''
 #include <js/Initialization.h>
-int main(void) {
-    if (!JS_Init()) return 1;
-    JS_ShutDown();
-    return 0;
+int main( void ) {
+    uint8_t l_exitCode = 0;
+
+    if ( !JS_Init() ) {
+        l_exitCode = 1;
+    }
+
+    if ( l_exitCode == 0 ) {
+        JS_ShutDown();
+    }
+
+    return ( l_exitCode );
 }
 ''',
     args: [ argument_list ], dependencies: [ spidermonkey ],

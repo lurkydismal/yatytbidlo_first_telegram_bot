@@ -1,11 +1,14 @@
 #include <fmt/core.h>
 #include <js/Conversions.h>
+#include <js_ic.hpp>
 #include <jsapi.h>
 #include <std.hpp>
 
 bool printJS( JSContext* _context,
               unsigned _argumentCount,
               JS::Value* _valuePointer ) {
+    std::error_code l_exitCode;
+
     JS::CallArgs l_arguments =
         JS::CallArgsFromVp( _argumentCount, _valuePointer );
 
@@ -14,7 +17,7 @@ bool printJS( JSContext* _context,
         _context, JS::ToString( _context, l_argument ) );
 
     if ( !l_argumentAsJSString ) {
-        return ( false );
+        l_exitCode.assign( EACCES, std::generic_category() );
     }
 
     JS::UniqueChars l_argumentAsString =
@@ -24,5 +27,7 @@ bool printJS( JSContext* _context,
 
     l_arguments.rval().setUndefined();
 
-    return ( true );
+    errno = l_exitCode.value();
+
+    return ( !static_cast< bool >( l_exitCode ) );
 }

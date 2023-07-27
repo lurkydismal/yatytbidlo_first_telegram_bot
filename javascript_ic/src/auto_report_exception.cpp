@@ -8,23 +8,26 @@ AutoReportException::AutoReportException( JSContext* _context )
     : context_( _context ) {}
 
 AutoReportException::~AutoReportException() {
-    if ( !JS_IsExceptionPending( context_ ) )
+    if ( !JS_IsExceptionPending( context_ ) ) {
         return;
+    }
 
-    JS::RootedValue v_exn( context_ );
-    mozilla::Unused << JS_GetPendingException( context_, &v_exn );
+    JS::RootedValue l_exception( context_ );
+    mozilla::Unused << JS_GetPendingException( context_, &l_exception );
     JS_ClearPendingException( context_ );
 
-    JS::RootedString message( context_, JS::ToString( context_, v_exn ) );
+    JS::RootedString l_message( context_,
+                                JS::ToString( context_, l_exception ) );
 
-    if ( !message ) {
+    if ( !l_message ) {
         fmt::print( stderr,
                     "(could not convert thrown exception to string)\n" );
 
     } else {
-        JS::UniqueChars message_utf8(
-            JS_EncodeStringToUTF8( context_, message ) );
-        fmt::print( stderr, "{}\n", message_utf8.get() );
+        JS::UniqueChars l_messageAsUTF8(
+            JS_EncodeStringToUTF8( context_, l_message ) );
+
+        fmt::print( stderr, "{}\n", l_messageAsUTF8.get() );
     }
 
     JS_ClearPendingException( context_ );
