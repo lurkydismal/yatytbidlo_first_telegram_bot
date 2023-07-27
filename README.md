@@ -1,6 +1,6 @@
 # first_telegramBot
 
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/lurkydismal/yatytbidlo_first_telegram_bot/badge)](https://securityscorecards.dev/viewer/?uri=github.com/lurkydismal/yatytbidlo_first_telegram_bot)
+<!-- [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/lurkydismal/yatytbidlo_first_telegram_bot/badge)](https://securityscorecards.dev/viewer/?uri=github.com/lurkydismal/yatytbidlo_first_telegram_bot) -->
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/335d48f9307d4dd68fc40dc884ab7c32)](https://app.codacy.com/gh/lurkydismal/yatytbidlo_first_telegram_bot/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
 > Outline a brief description of your project.
