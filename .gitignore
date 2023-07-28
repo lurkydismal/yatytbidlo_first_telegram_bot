@@ -4,4 +4,12 @@
 *.bak
 *.js
 
+def/
+html/
+latex/
+man/
+rtf/
+xml/
+
 !src/main.js
+# !documentation_build_log.txt

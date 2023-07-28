@@ -11,6 +11,8 @@ bool printJS( JSContext* _context,
 
     JS::CallArgs l_arguments =
         JS::CallArgsFromVp( _argumentCount, _valuePointer );
+    JS::RootedObject l_global(
+        _context, JS::GetNonCCWObjectGlobal( &l_arguments.callee() ) );
 
     JS::Rooted< JS::Value > l_argument( _context, l_arguments.get( 0 ) );
     JS::Rooted< JSString* > l_argumentAsJSString(
@@ -18,6 +20,8 @@ bool printJS( JSContext* _context,
 
     if ( !l_argumentAsJSString ) {
         l_exitCode.assign( EACCES, std::generic_category() );
+
+        JS_THROW_ERROR( _context, l_global, "Permission denied" );
     }
 
     JS::UniqueChars l_argumentAsString =

@@ -12,19 +12,6 @@
 
 #include <fstream>
 
-/* When JS_ReportError creates a new Error object, it sets the fileName and
- * lineNumber properties to the line of JavaScript code currently at the top of
- * the stack. This is usually the line of code that called your native function,
- * so it's usually what you want. JSAPI code can override this by creating the
- * Error object directly and passing additional arguments to the constructor:
- *
- * throw new Error(_message, _fileName, _lineNumber);
- *
- * An example use would be to pass the filename and line number in the C++ code
- * instead:
- *
- * return throwError(_context, _global, _message, __FILE__, __LINE__);
- */
 std::error_code JavaScriptIC::throwError( JSContext* _context,
                                           JS::HandleObject _global,
                                           const char* _message,
@@ -76,11 +63,6 @@ EXIT:
     return ( l_exitCode );
 }
 
-#define THROW_ERROR( _context, _global, _message ) \
-    throwError( _context, _global, _message, __FILE__, __LINE__ )
-
-// Create a simple Global object. A global object is the top-level 'this' value
-// in a script and is required in order to compile or execute JavaScript.
 JSObject* JavaScriptIC::createGlobal( JSContext* _context ) {
     JS::RealmOptions options;
 
@@ -91,9 +73,6 @@ JSObject* JavaScriptIC::createGlobal( JSContext* _context ) {
                                  JS::FireOnNewGlobalHook, options ) );
 }
 
-// Helper to read current exception and dump to stderr.
-//
-// NOTE: This must be called with a JSAutoRealm (or equivalent) on the stack.
 void JavaScriptIC::reportAndClearException( JSContext* _context ) {
     std::error_code l_exitCode;
 
