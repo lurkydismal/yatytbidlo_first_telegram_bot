@@ -5,7 +5,8 @@ function onReceiveRoutine( _response ) {
 
     print( "OK" );
 
-    return new Array(
-        "/bot" + "token" + "/getMe",
-        GETRequestCallback.name );
+    return new Array( "/bot" +
+                          "token" +
+                          "/getMe",
+                      GETRequestCallback.name );
 }
