@@ -11,9 +11,9 @@ argument_list = []
 
 asio = dependency( 'asio' )
 fmt = dependency( 'fmt' )
+openssl = dependency( 'openssl' )
 readline = cxx.find_library( 'readline' )
 spidermonkey = dependency( 'mozjs-102' )
-zlib = dependency( 'zlib' )  # (is already a SpiderMonkey dependency)
 
 javascript_ic_include = include_directories( 'javascript_ic/include' )
 host_include = include_directories( 'host/include' )
@@ -89,14 +89,14 @@ add_project_arguments(
 
 javascript_ic = declare_dependency(
     compile_args : argument_list + test_warning_argument_list,
-    dependencies : [ fmt, spidermonkey, zlib ],
+    dependencies : [ fmt, spidermonkey ],
     include_directories : [ javascript_ic_include ],
     sources : [ 'javascript_ic/src/js_ic.cpp', 'javascript_ic/src/auto_report_exception.cpp', 'javascript_ic/src/std.cpp' ],
     version : '1.0.0'
 )
 host = declare_dependency(
     compile_args : argument_list + test_warning_argument_list,
-    dependencies : [ asio, fmt, spidermonkey, readline ],
+    dependencies : [ asio, fmt, openssl, readline, spidermonkey ],
     include_directories : [ javascript_ic_include, host_include ],
     sources : [ 'host/src/host.cpp', 'host/src/session.cpp' ],
     version : '1.0.0'
@@ -105,7 +105,7 @@ host = declare_dependency(
 executable(
     'main',
     'src/main.cpp',
-    dependencies : [ asio, fmt, spidermonkey, zlib, readline, javascript_ic, host ],
+    dependencies : [ asio, fmt, host, javascript_ic, spidermonkey ],
     include_directories : [ javascript_ic_include, host_include ]
 )
 
