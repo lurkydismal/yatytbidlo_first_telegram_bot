@@ -12,6 +12,10 @@
 #include <asio.hpp>
 #include <js_ic.hpp>
 
+#include <map>
+#include <thread>
+#include <vector>
+
 using asio::ip::tcp;
 
 /**
@@ -26,6 +30,12 @@ public:
      * @param _socket The TCP socket type
      */
     explicit session( tcp::socket _socket );
+
+    /**
+     * @brief Destroy the session object
+     *
+     */
+    ~session();
 
     /**
      * @brief Begin execute sockets
@@ -48,27 +58,35 @@ private:
      */
     void doWrite( std::size_t _length );
 
+    /**
+     * @brief
+     *
+     * @param _GETQuery GET request to send
+     * @param _response String to write response into
+     * @return std::error_code Exit code
+     */
+    std::error_code sendGETRequest( std::string _GETQuery,
+                                    std::string& _response );
+
+    /**
+     * @brief Parse HTTP request
+     *
+     * @details Does put request headers into requestHeaders_ and request data
+     * into data_
+     *
+     */
+    void parseRequest( void );
+
+    /**
+     * @brief Parse HTTP header
+     *
+     * @return std::pair Header type : header content
+     */
+    std::pair< std::string, std::string > parseHeader( std::string );
+
 private:
     /**
-     * @brief Session exit code
-     *
-     */
-    std::error_code errorCode_;
-
-    /**
-     * @brief The TCP socket type
-     *
-     */
-    tcp::socket socket_;
-
-    /**
-     * @brief JS to execute in answer to read
-     *
-     */
-    const std::string fileName_ = "main.js";
-
-    /**
-     * @brief Max read lenght
+     * @brief Max read length
      *
      */
     enum { MAX_LENGTH = 1024 };
@@ -78,4 +96,40 @@ private:
      *
      */
     char data_[ MAX_LENGTH ];
+
+    /**
+     * @brief Session exit code
+     *
+     */
+    std::error_code errorCode_;
+
+    /**
+     * @brief JS to execute in answer to read
+     *
+     */
+    const std::string fileName_ = "main.js";
+
+    /**
+     * @brief HTTP request headers
+     *
+     */
+    std::map< std::string, std::string > requestHeaders_;
+
+    /**
+     * @brief The TCP socket type
+     *
+     */
+    tcp::socket socket_;
+
+    /**
+     * @brief Host address for connection
+     *
+     */
+    std::string hostAddress_ = "api.telegram.org";
+
+    /**
+     * @brief Threads vector where JS runtime happens
+     *
+     */
+    std::vector< std::thread > JSThreads_;
 };
