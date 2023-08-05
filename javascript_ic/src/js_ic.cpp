@@ -73,7 +73,7 @@ JSObject* JavaScriptIC::createGlobal( JSContext* _context ) {
                                  JS::FireOnNewGlobalHook, options ) );
 }
 
-void JavaScriptIC::reportAndClearException( JSContext* _context ) {
+std::error_code JavaScriptIC::reportAndClearException( JSContext* _context ) {
     std::error_code l_exitCode;
 
     JS::ExceptionStack l_exceptionStack( _context );
@@ -95,16 +95,16 @@ void JavaScriptIC::reportAndClearException( JSContext* _context ) {
         l_exitCode.assign( EACCES, std::generic_category() );
     }
 
-    if ( l_exitCode ) {
-        exit( l_exitCode.value() );
+    if ( !l_exitCode ) {
+        JS::PrintError( stderr, l_reportBuilder, false );
     }
 
-    JS::PrintError( stderr, l_reportBuilder, false );
+    return ( l_exitCode );
 }
 
 bool JavaScriptIC::defineFunctions( JSContext* _context,
                                     JS::Handle< JSObject* > _global ) {
-    return ( JS_DefineFunction( _context, _global, "print", &printJS, 0, 0 ) );
+    return ( JS_DefineFunctions( _context, _global, GlobalFunctions ) );
 }
 
 bool JavaScriptIC::callGlobalFunction( JSContext* _context,
@@ -116,25 +116,15 @@ bool JavaScriptIC::callGlobalFunction( JSContext* _context,
                                   _arguments, &_returnValue ) );
 }
 
-std::error_code JavaScriptIC::executeFileByName( JSContext* _context,
-                                                 std::string _fileName ) {
-    std::ios_base::sync_with_stdio( false );
-
+bool JavaScriptIC::executeFileByName( JSContext* _context,
+                                      std::string _fileName ) {
     JS::RootedValue l_returnValue( _context );
-    std::string l_line;
-    std::string l_jsAsOneLine = "";
-    std::ifstream l_inputFile( _fileName );
-    uint32_t l_lineNumber = 0;
+    JS::CompileOptions l_options( _context );
 
-    while ( std::getline( l_inputFile, l_line ) ) {
-        l_lineNumber++;
+    l_options.setFile( _fileName.c_str() );
 
-        l_jsAsOneLine += l_line;
-    }
-
-    std::ios_base::sync_with_stdio( true );
-
-    return ( executeCode( _context, _fileName, l_lineNumber, l_jsAsOneLine ) );
+    return ( EvaluateUtf8Path( _context, l_options, _fileName.c_str(),
+                               &l_returnValue ) );
 }
 
 std::error_code JavaScriptIC::executeCode( JSContext* _context,
