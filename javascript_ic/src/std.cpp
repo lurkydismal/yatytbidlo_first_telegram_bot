@@ -1,3 +1,4 @@
+#include <asio.hpp>
 #include <fmt/core.h>
 #include <js/Conversions.h>
 #include <js_ic.hpp>
@@ -5,7 +6,7 @@
 #include <std.hpp>
 
 bool printJS( JSContext* _context,
-              unsigned _argumentCount,
+              uint32_t _argumentCount,
               JS::Value* _valuePointer ) {
     std::error_code l_exitCode;
 
