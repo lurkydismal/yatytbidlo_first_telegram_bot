@@ -14,12 +14,16 @@
 /**
  * @brief Console print
  *
- * @param _context JS context
- * @param _argumentCount Argument count
- * @param _valuePointer Arguments pointer
- * @return true On success
- * @return false If convertation to JSString has failed
+ * @details print( _object )
+ * @return bool Success status
  */
 bool printJS( JSContext* _context,
-              unsigned _argumentCount,
+              uint32_t _argumentCount,
               JS::Value* _valuePointer );
+
+/**
+ * @brief Functions C/ C++ functions to be defined in JS
+ *
+ */
+const JSFunctionSpec GlobalFunctions[] = { JS_FN( "print", &printJS, 1, 0 ),
+                                           JS_FS_END };
