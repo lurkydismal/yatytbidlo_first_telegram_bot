@@ -1,15 +1,11 @@
-function sendGETRequest( _path, _callback ) {
-    let l_xmlHttp = new XMLHttpRequest();
+function GETRequestCallback( _response ) { print( _response ); }
 
-    l_xmlHttp.onreadystatechange = function() {
-        if ( ( l_xmlHttp.readyState == XMLHttpRequest.DONE ) &&
-             ( l_xmlHttp.status === 200 ) ) {
-            _callback( l_xmlHttp.responseText );
-        }
-    };
+function onReceiveRoutine( _response ) {
+    const obj = JSON.parse( _response );
 
-    l_xmlHttp.open( "GET", _path, true );
-    l_xmlHttp.send( null );
+    print( "OK" );
+
+    return new Array(
+        "/bot" + "token" + "/getMe",
+        GETRequestCallback.name );
 }
-
-function receiveRoutine( _responce ) { print( _responce ); }
