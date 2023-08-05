@@ -72,8 +72,10 @@ JSObject* createGlobal( JSContext* _context );
  * @note This must be called with a JSAutoRealm (or equivalent) on the stack.
  *
  * @param _context JS context
+ * @return std::error_code Error code
+ *
  */
-void reportAndClearException( JSContext* _context );
+std::error_code reportAndClearException( JSContext* _context );
 
 /**
  * @brief Define C/ C++ functions to be called from JS
@@ -105,9 +107,9 @@ bool callGlobalFunction( JSContext* _context,
  *
  * @param _context JS context
  * @param _fileName File name which has to be executed
- * @return std::error_code Function exit code
+ * @return bool Function exit status
  */
-std::error_code executeFileByName( JSContext* _context, std::string _fileName );
+bool executeFileByName( JSContext* _context, std::string _fileName );
 
 /**
  * @brief Execute JS code from string
