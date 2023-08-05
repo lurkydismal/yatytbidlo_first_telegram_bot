@@ -49,9 +49,9 @@ int main( int _argumentCount, char* _argumentVector[] ) {
             l_portNumber = l_distribution( l_generator );
         }
 
-        fmt::print( "Launch using port {}\n ", l_portNumber );
+        fmt::print( "Launch using port {}\n", l_portNumber );
 
-        asio::io_context l_ioContext;
+        asio::io_context l_ioContext{ ASIO_CONCURRENCY_HINT_1 };
 
         host l_host( l_ioContext, l_portNumber );
 
