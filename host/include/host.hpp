@@ -34,6 +34,7 @@ private:
      */
     void doAccept( void );
 
+private:
     /**
      * @brief The TCP acceptor type
      *
