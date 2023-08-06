@@ -58,7 +58,12 @@ int main( int _argumentCount, char* _argumentVector[] ) {
         l_ioContext.run();
 
     } catch ( std::invalid_argument const& _exception ) {
-        fmt::print( stderr, "Exception: {}\n ", _exception.what() );
+        fmt::print( stderr, "Error: {}\n ", _exception.what() );
+
+    } catch ( std::system_error const& _exception ) {
+        fmt::print( stderr, "Error: {}\n ", _exception.what() );
+
+        l_exitCode = _exception.code();
     }
 
     return ( l_exitCode.value() );
