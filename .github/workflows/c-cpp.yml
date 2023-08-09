@@ -23,7 +23,7 @@ jobs:
     - name: Get Meson
       run: |
         sudo apt-get install -y build-essential &&
-        pip install ninja-build &&
+        pip install ninja &&
         pip install meson &&
         sudo apt-get install -y libmozjs-102-dev
       shell: bash
