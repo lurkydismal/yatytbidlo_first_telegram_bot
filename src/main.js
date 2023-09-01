@@ -1,4 +1,6 @@
-function GETRequestCallback( _response ) { print( _response ); }
+function GETRequestCallback( _response ) {
+    print( `RESPONSE: ${_response}\n` );
+}
 
 function onReceiveRoutine( _response ) {
     const obj = JSON.parse( _response );
