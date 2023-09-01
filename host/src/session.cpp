@@ -41,10 +41,6 @@ void session::doRead( void ) {
     socket_.async_read_some(
         asio::buffer( data_, MAX_LENGTH ),
         [ this, self ]( std::error_code _errorCode, std::size_t _length ) {
-            auto l_stripJSON = [ this ]( size_t _receivedLength ) {
-                fmt::print( "{}={}\n", data_, _receivedLength );
-            };
-
             if ( ( _errorCode ) && ( _errorCode.value() != 2 ) ) {
                 errorCode_ = _errorCode;
 
@@ -56,8 +52,6 @@ void session::doRead( void ) {
 
             } else {
                 parseRequest();
-
-                l_stripJSON( _length );
 
                 fmt::print( fmt::emphasis::bold | fg( fmt::color::green ),
                             "{}\n", data_ );
@@ -317,26 +311,61 @@ void session::doWrite( std::size_t _length ) {
 
 std::error_code session::sendGETRequest( std::string _GETQuery,
                                          std::string& _response ) {
+    auto openProcessToString = []( char** _responsePointer, char* _bashCommand,
+                                   ... ) {
+        int l_exitCode;
+        char l_buffer[ MAX_LENGTH ] = "unknown";
+        char* l_bashCommand = NULL;
+        FILE* l_pipeDescriptor = NULL;
+        va_list l_variableArgumentListIterator;
+
+        va_start( l_variableArgumentListIterator, _bashCommand );
+        l_exitCode = vasprintf( &l_bashCommand, _bashCommand,
+                                l_variableArgumentListIterator );
+        va_end( l_variableArgumentListIterator );
+
+        if ( !l_exitCode ) {
+            goto ERROR;
+        }
+
+        if ( ( l_pipeDescriptor = popen( l_bashCommand, "r" ) ) == NULL ) {
+            goto ERROR;
+        }
+
+        if ( fgets( l_buffer, MAX_LENGTH, l_pipeDescriptor ) == NULL ) {
+            goto ERROR;
+        }
+
+        l_buffer[ strlen( l_buffer ) - 1 ] = '\0';
+
+        l_exitCode = asprintf( _responsePointer, "%s", l_buffer );
+
+        if ( !l_exitCode ) {
+            goto ERROR;
+        }
+
+        free( l_bashCommand );
+
+        return ( pclose( l_pipeDescriptor ) );
+
+    ERROR:
+        free( l_bashCommand );
+
+        return ( ( l_pipeDescriptor == NULL )
+                     ? ( 1 )
+                     : ( 2 + pclose( l_pipeDescriptor ) ) );
+    };
+
     std::error_code l_exitCode;
 
-    asio::io_context l_ioContext;
-    const SSL_METHOD* l_rawSSLMethod = SSLv23_client_method();
-    SSL_CTX* l_rawSSLContext = SSL_CTX_new( l_rawSSLMethod );
+    char* l_response;
 
-    ssl::context l_SSLContext( l_rawSSLContext );
-
-    ssl::stream< tcp::socket > l_TCPSocketStream( l_ioContext, l_SSLContext );
-
-    tcp::resolver l_TCPResolver( l_ioContext );
-    tcp::resolver::query l_queryAddress( hostAddress_, "https" );
-    tcp::resolver::iterator l_endpointIterator =
-        l_TCPResolver.resolve( l_queryAddress );
-
-    SSL_set_tlsext_host_name( l_TCPSocketStream.native_handle(),
-                              hostAddress_.c_str() );
-
-    asio::connect( l_TCPSocketStream.lowest_layer(), l_endpointIterator,
-                   l_exitCode );
+    if ( openProcessToString(
+             &l_response, const_cast< char* >(
+                              ( "curl -s https://" + hostAddress_ + _GETQuery )
+                                  .c_str() ) ) ) {
+        l_exitCode.assign( EADDRNOTAVAIL, std::generic_category() );
+    }
 
     if ( l_exitCode ) {
         fmt::print( fmt::emphasis::bold | fg( fmt::color::red ),
@@ -345,38 +374,11 @@ std::error_code session::sendGETRequest( std::string _GETQuery,
         fmt::print( fg( fmt::color::white ), "{}\n", l_exitCode.message() );
     }
 
-    l_TCPSocketStream.handshake( ssl::stream_base::handshake_type::client );
-
-    asio::streambuf request;
-    std::ostream request_stream( &request );
-    request_stream << "GET " << _GETQuery << " HTTP/1.1\r\n";
-    request_stream << "Host: " << hostAddress_ << "\r\n";
-    request_stream << "Accept: */*\r\n";
-    request_stream << "Connection: close\r\n\r\n";
-
-    asio::write( l_TCPSocketStream, request );
-
-    std::string response;
-
-    std::error_code l_temporaryErrorCode;
-
-    while ( !l_temporaryErrorCode ) {
-        char l_buffer[ MAX_LENGTH ];
-        size_t bytes_transferred = l_TCPSocketStream.read_some(
-            asio::buffer( l_buffer ), l_temporaryErrorCode );
-
-        if ( !l_temporaryErrorCode ) {
-            response.append( l_buffer, l_buffer + bytes_transferred );
-        }
-    };
-
-    _response = response;
+    _response = l_response;
 
     memset( &( data_[ 0 ] ), 0, sizeof( data_ ) );
-    strncpy( data_, response.c_str(), sizeof( data_ ) );
+    strncpy( data_, l_response, sizeof( data_ ) );
     data_[ sizeof( data_ ) - 1 ] = 0;
-
-    parseRequest();
 
     return ( l_exitCode );
 }
