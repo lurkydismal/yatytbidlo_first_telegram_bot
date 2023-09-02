@@ -3,12 +3,16 @@ function GETRequestCallback( _response ) {
 }
 
 function onReceiveRoutine( _response ) {
-    const obj = JSON.parse( _response );
+    try {
+        const obj = JSON.parse( _response );
 
-    print( "OK" );
+        print( "OK" );
 
-    return new Array( "/bot" +
-                          "token" +
-                          "/getMe",
-                      GETRequestCallback.name );
+        return new Array( "/bot" +
+                              "token" +
+                              "/getMe",
+                          GETRequestCallback.name );
+    } catch ( _error ) {
+        print( `${_response} : ${_error.message}\n` );
+    }
 }
