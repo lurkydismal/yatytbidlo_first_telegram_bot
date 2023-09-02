@@ -290,12 +290,11 @@ void session::doRead( void ) {
                         }
 
                     DESTROY_CONTEXT_AND_SHUTDOWN:
-
                         JS_DestroyContext( l_context );
                         JS_ShutDown();
                     }
-                EXIT:
 
+                EXIT:
                     if ( l_exitCode ) {
                         errorCode_ = l_exitCode;
 
