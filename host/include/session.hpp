@@ -89,13 +89,19 @@ private:
      * @brief Max read length
      *
      */
-    enum { MAX_LENGTH = 1024 };
+    enum { MAX_LENGTH = 8164 };
 
     /**
      * @brief Array to store read data
      *
      */
     char data_[ MAX_LENGTH ];
+
+    /**
+     * @brief String to store read data
+     *
+     */
+    std::string wholeData_;
 
     /**
      * @brief Session exit code

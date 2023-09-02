@@ -53,6 +53,31 @@ void session::doRead( void ) {
             } else {
                 parseRequest();
 
+                if ( requestHeaders_.count( "Content-Length" ) ) {
+                    if ( std::stoul( requestHeaders_.at( "Content-Length" ) ) >
+                         _length ) {
+                        wholeData_ += data_;
+
+                        return;
+                    }
+
+                } else {
+                    fmt::print( fmt::emphasis::bold | fg( fmt::color::red ),
+                                "Request header has no \"Content-Length\" "
+                                "attribute\n" );
+                    fmt::print( fg( fmt::color::white ), "\n" );
+
+                    return;
+                }
+
+                if ( !wholeData_.empty() ) {
+                    memset( &( data_[ 0 ] ), 0, sizeof( data_ ) );
+                    strncpy( data_, wholeData_.c_str(), sizeof( data_ ) );
+                    data_[ sizeof( data_ ) - 1 ] = 0;
+
+                    wholeData_.clear();
+                }
+
                 fmt::print( fmt::emphasis::bold | fg( fmt::color::green ),
                             "{}\n", data_ );
                 fmt::print( fg( fmt::color::white ), "\n" );
@@ -460,6 +485,7 @@ void session::parseRequest( void ) {
     std::string const l_body(
         std::istreambuf_iterator< char >{ l_bufferStream }, {} );
 
+    memset( &( data_[ 0 ] ), 0, sizeof( data_ ) );
     strncpy( data_, l_body.c_str(), sizeof( data_ ) );
     data_[ sizeof( data_ ) - 1 ] = 0;
 
