@@ -61,6 +61,7 @@ jobs:
 
       - name: Get libmozjs
         run: |
+          sudo apt-get update -y &&
           sudo apt-get install -y libmozjs-102-dev
 
       # Initializes the CodeQL tools for scanning.
