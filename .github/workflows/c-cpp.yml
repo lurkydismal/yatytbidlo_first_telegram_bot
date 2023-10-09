@@ -38,6 +38,7 @@ jobs:
 
     - name: Get libmozjs
       run: |
+        sudo apt-get update -y &&
         sudo apt-get install -y libmozjs-102-dev
 
     - name: Meson build
